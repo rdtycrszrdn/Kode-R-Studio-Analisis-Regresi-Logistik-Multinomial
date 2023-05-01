@@ -1,0 +1,34 @@
+---
+title: "Analisis Regresi Logistik Multinomial"
+author: "Arditya Criszardin"
+date: "2023-05-01"
+output: html_document
+---
+
+```{r}
+# Memasang paket "nnet" jika belum terpasang
+# install.packages("nnet")
+
+# Memuat data
+my_data <- read.csv("my_data.csv")
+
+# Memisahkan data menjadi data pelatihan dan data uji
+library(caret)
+set.seed(123)
+train_index <- createDataPartition(my_data$target, p = 0.7, list = FALSE)
+train_data <- my_data[train_index, ]
+test_data <- my_data[-train_index, ]
+
+# Melakukan Analisis Regresi Logistik Multinomial dengan menggunakan paket "nnet"
+library(nnet)
+my_mlogit <- multinom(target ~ ., data = train_data)
+
+# Menampilkan hasil Analisis Regresi Logistik Multinomial
+summary(my_mlogit)
+
+# Memprediksi nilai target menggunakan model yang telah dibuat
+pred_mlogit <- predict(my_mlogit, newdata = test_data[,-1], type = "class")
+confusionMatrix(pred_mlogit, test_data$target)
+
+```
+
